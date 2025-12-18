@@ -1,0 +1,1690 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HistoQuiz Avanzado - Examen de Histología</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0c2461, #1e3799, #4a69bd);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1100px;
+            background-color: rgba(255, 255, 255, 0.97);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Pantalla de inicio */
+        .start-screen {
+            padding: 50px 40px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .start-screen h1 {
+            font-size: 3rem;
+            color: #0c2461;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .start-screen h2 {
+            font-size: 1.8rem;
+            color: #4a69bd;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        .start-screen p {
+            font-size: 1.2rem;
+            color: #555;
+            margin-bottom: 25px;
+            max-width: 700px;
+            line-height: 1.6;
+        }
+
+        .features-list {
+            text-align: left;
+            max-width: 600px;
+            margin: 0 auto 40px;
+            background-color: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            border-left: 5px solid #4a69bd;
+        }
+
+        .features-list h3 {
+            color: #0c2461;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 12px;
+            color: #555;
+        }
+
+        .feature-item i {
+            color: #78e08f;
+            margin-right: 10px;
+            margin-top: 3px;
+            flex-shrink: 0;
+        }
+
+        .start-btn {
+            background: linear-gradient(90deg, #0c2461, #1e3799);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            padding: 18px 50px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .start-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(90deg, #1e3799, #4a69bd);
+        }
+
+        /* Cabecera del juego */
+        .header {
+            background: linear-gradient(90deg, #0c2461, #1e3799);
+            color: white;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .header-content {
+            max-width: 800px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+
+        .microscope-icon {
+            font-size: 2.5rem;
+            color: #78e08f;
+            filter: drop-shadow(0 0 5px rgba(120, 224, 143, 0.7));
+        }
+
+        .difficulty-badge {
+            display: inline-block;
+            background-color: #e74c3c;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-top: 5px;
+            font-weight: bold;
+        }
+
+        /* Temporizador */
+        .timer-container {
+            position: absolute;
+            right: 25px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .timer-circle {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: #0c2461;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .timer-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        .timer-label {
+            margin-top: 8px;
+            font-size: 0.9rem;
+            color: #78e08f;
+            font-weight: bold;
+        }
+
+        .timer-warning {
+            color: #f8c471 !important;
+            animation: pulse 1s infinite;
+        }
+
+        .timer-danger {
+            color: #e74c3c !important;
+            animation: pulse 0.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        .game-info {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 30px;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .info-box {
+            text-align: center;
+            flex: 1;
+        }
+
+        .info-box h3 {
+            font-size: 1rem;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .info-box .value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #0c2461;
+        }
+
+        #progress-bar {
+            width: 100%;
+            height: 8px;
+            background-color: #e9ecef;
+            margin-top: 5px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        #progress {
+            height: 100%;
+            background: linear-gradient(90deg, #78e08f, #4a69bd);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .game-content {
+            display: flex;
+            flex-direction: column;
+            padding: 30px;
+        }
+
+        @media (min-width: 992px) {
+            .game-content {
+                flex-direction: row;
+                gap: 40px;
+            }
+        }
+
+        .question-section {
+            flex: 2;
+        }
+
+        .image-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .image-container {
+            width: 100%;
+            height: 250px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 15px;
+            background-color: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .organ-tag {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: rgba(12, 36, 97, 0.85);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            z-index: 2;
+        }
+
+        .histo-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .histo-image:hover {
+            transform: scale(1.05);
+        }
+
+        .image-caption {
+            font-size: 0.9rem;
+            color: #666;
+            text-align: center;
+            font-style: italic;
+            padding: 0 10px;
+            width: 100%;
+        }
+
+        .question-type {
+            display: inline-block;
+            background-color: #0c2461;
+            color: white;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .question {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            line-height: 1.4;
+            color: #222;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+        }
+
+        .time-up-message {
+            color: #e74c3c;
+            font-weight: bold;
+            margin-bottom: 15px;
+            display: none;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .options-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        @media (min-width: 768px) {
+            .options-container {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .option {
+            background-color: #f1f3f5;
+            border: 2px solid #dee2e6;
+            border-radius: 12px;
+            padding: 15px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .option:hover {
+            background-color: #e9ecef;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .option.correct {
+            background-color: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .option.incorrect {
+            background-color: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        .option.disabled {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .option.time-up {
+            background-color: #f8f9fa;
+            border-color: #6c757d;
+            color: #6c757d;
+        }
+
+        .option-letter {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            background-color: #0c2461;
+            color: white;
+            border-radius: 50%;
+            margin-right: 15px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .option-text {
+            flex: 1;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .hint-btn {
+            background-color: #f8c471;
+            color: #333;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: bold;
+        }
+
+        .hint-btn:hover {
+            background-color: #f7b752;
+            transform: translateY(-2px);
+        }
+
+        .hint-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .next-btn {
+            padding: 15px 30px;
+            background: linear-gradient(90deg, #4a69bd, #1e3799);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .next-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .next-btn.hidden {
+            display: none;
+        }
+
+        .hint-box {
+            background-color: #f8f9fa;
+            border-left: 4px solid #f8c471;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 8px;
+            display: none;
+            width: 100%;
+        }
+
+        .hint-box h4 {
+            color: #0c2461;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .hint-box p {
+            color: #555;
+            line-height: 1.5;
+        }
+
+        .result-screen {
+            text-align: center;
+            padding: 40px 30px;
+            display: none;
+        }
+
+        .result-screen h2 {
+            font-size: 2.5rem;
+            color: #0c2461;
+            margin-bottom: 20px;
+        }
+
+        .result-screen p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            color: #555;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .score-circle {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: conic-gradient(#78e08f 0% 70%, #e9ecef 70% 100%);
+            margin: 0 auto 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .score-inner {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background-color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .score-value {
+            font-size: 2.8rem;
+            color: #0c2461;
+        }
+
+        .score-text {
+            font-size: 1.1rem;
+            color: #666;
+        }
+
+        .result-details {
+            background-color: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            max-width: 600px;
+            margin: 0 auto 30px;
+            text-align: left;
+        }
+
+        .result-details h3 {
+            color: #0c2461;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            font-weight: bold;
+            color: #555;
+        }
+
+        .detail-value {
+            color: #0c2461;
+            font-weight: bold;
+        }
+
+        .restart-btn {
+            background: linear-gradient(90deg, #0c2461, #1e3799);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .restart-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .footer {
+            margin-top: 20px;
+            color: white;
+            text-align: center;
+            font-size: 0.9rem;
+            opacity: 0.9;
+            max-width: 1100px;
+        }
+
+        .footer a {
+            color: #78e08f;
+            text-decoration: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .question {
+                font-size: 1.3rem;
+            }
+            
+            .game-info {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .hint-btn, .next-btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .timer-container {
+                position: static;
+                transform: none;
+                margin-top: 15px;
+            }
+            
+            .start-screen h1 {
+                font-size: 2.2rem;
+            }
+            
+            .start-screen h2 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Pantalla de inicio -->
+        <div class="start-screen" id="start-screen">
+            <h1><i class="fas fa-microscope"></i> HistoQuiz Avanzado</h1>
+            <h2>Examen Completo de Histología</h2>
+            
+            <p>Pon a prueba tus conocimientos de histología con este examen completo que cubre 21 órganos diferentes. Deberás identificar órganos, características histológicas, funciones y más.</p>
+            
+            <div class="features-list">
+                <h3><i class="fas fa-star"></i> Características del Juego</h3>
+                <div class="feature-item">
+                    <i class="fas fa-clock"></i>
+                    <span><strong>Temporizador:</strong> 30 segundos por pregunta</span>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-question-circle"></i>
+                    <span><strong>25 preguntas:</strong> Seleccionadas aleatoriamente de nuestra base de datos</span>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-image"></i>
+                    <span><strong>Imágenes reales:</strong> Preparaciones histológicas de órganos humanos</span>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-lightbulb"></i>
+                    <span><strong>Sistema de pistas:</strong> Ayudas disponibles con penalización de puntos</span>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-brain"></i>
+                    <span><strong>6 tipos de preguntas:</strong> Identificación, objetivo, tinción, localización, características y función</span>
+                </div>
+            </div>
+            
+            <button class="start-btn" id="start-btn">
+                <i class="fas fa-play-circle"></i> COMENZAR EXAMEN
+            </button>
+            
+            <p style="margin-top: 30px; font-size: 1rem; color: #777;">
+                <i class="fas fa-exclamation-triangle"></i> 
+                El examen comenzará automáticamente después de hacer clic en "Comenzar Examen"
+            </p>
+        </div>
+
+        <!-- Pantalla de juego (inicialmente oculta) -->
+        <div id="game-container" style="display: none;">
+            <div class="header">
+                <i class="fas fa-microscope microscope-icon"></i>
+                <div class="header-content">
+                    <h1>HistoQuiz Avanzado</h1>
+                    <p>Examen completo de histología - Identifica órganos, características y funciones</p>
+                    <div class="difficulty-badge">NIVEL AVANZADO</div>
+                </div>
+                
+                <div class="timer-container">
+                    <div class="timer-circle">
+                        <div class="timer-value" id="timer-value">30</div>
+                    </div>
+                    <div class="timer-label" id="timer-label">SEGUNDOS</div>
+                </div>
+            </div>
+
+            <div class="game-info">
+                <div class="info-box">
+                    <h3>PREGUNTA</h3>
+                    <div class="value" id="question-counter">1/25</div>
+                </div>
+                <div class="info-box">
+                    <h3>PUNTOS</h3>
+                    <div class="value" id="score">0</div>
+                </div>
+                <div class="info-box">
+                    <h3>PRECISIÓN</h3>
+                    <div class="value" id="accuracy">0%</div>
+                </div>
+            </div>
+            
+            <div id="progress-bar">
+                <div id="progress"></div>
+            </div>
+
+            <div id="game-screen">
+                <div class="game-content">
+                    <div class="image-section">
+                        <div class="image-container">
+                            <div class="organ-tag" id="organ-tag">ÓRGANO</div>
+                            <img id="histo-image" class="histo-image" src="https://images.unsplash.com/photo-1559757148-5c350d0d3c56?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Imagen de histología">
+                        </div>
+                        <div class="image-caption" id="image-caption">Preparación histológica - Tinción H&E</div>
+                    </div>
+                    
+                    <div class="question-section">
+                        <div class="question-type" id="question-type">IDENTIFICACIÓN</div>
+                        <h2 class="question" id="question">¿Qué órgano muestra esta preparación histológica?</h2>
+                        
+                        <div class="time-up-message" id="time-up-message">
+                            <i class="fas fa-clock"></i> ¡Tiempo agotado! La respuesta correcta se mostrará automáticamente.
+                        </div>
+                        
+                        <div class="options-container" id="options-container">
+                            <!-- Las opciones se generarán con JavaScript -->
+                        </div>
+                        
+                        <div class="hint-box" id="hint-box">
+                            <h4><i class="fas fa-lightbulb"></i> Pista Histológica</h4>
+                            <p id="hint-text">Esta preparación muestra características típicas de un órgano específico del sistema digestivo.</p>
+                        </div>
+                        
+                        <div class="controls">
+                            <button class="hint-btn" id="hint-btn">
+                                <i class="fas fa-lightbulb"></i> Mostrar Pista (-5 pts)
+                            </button>
+                            <button class="next-btn hidden" id="next-btn">
+                                <i class="fas fa-arrow-right"></i> Siguiente Pregunta
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="result-screen" id="result-screen">
+                <h2><i class="fas fa-award"></i> ¡Examen Histológico Completado!</h2>
+                <p>Has terminado el examen completo de histología. Analiza tus resultados:</p>
+                
+                <div class="score-circle">
+                    <div class="score-inner">
+                        <div class="score-value" id="final-score">0</div>
+                        <div class="score-text">puntos</div>
+                    </div>
+                </div>
+                
+                <div class="result-details">
+                    <h3>ESTADÍSTICAS DEL EXAMEN</h3>
+                    <div class="detail-row">
+                        <span class="detail-label">Respuestas correctas:</span>
+                        <span class="detail-value"><span id="correct-answers">0</span>/<span id="total-questions">25</span></span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Precisión:</span>
+                        <span class="detail-value" id="final-accuracy">0%</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Puntuación máxima:</span>
+                        <span class="detail-value">250 puntos</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Pistas utilizadas:</span>
+                        <span class="detail-value" id="hints-used">0</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Tiempo estimado:</span>
+                        <span class="detail-value">12-15 min</span>
+                    </div>
+                </div>
+                
+                <p style="font-size: 1.1rem; color: #0c2461; font-weight: bold; margin-top: 20px;">
+                    <i class="fas fa-graduation-cap"></i> ¡Excelente trabajo futuro histólogo/a!
+                </p>
+                
+                <button class="restart-btn" id="restart-btn">
+                    <i class="fas fa-redo"></i> Realizar Otro Examen
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Examen avanzado de histología | Basado en preparaciones reales H&E | Creado con HTML, CSS y JavaScript</p>
+        <p>Imágenes de referencia de Unsplash y Wikimedia Commons | Uso educativo</p>
+    </div>
+
+    <script>
+        // Base de datos completa de órganos con toda la información proporcionada
+        const organsData = [
+            {
+                id: 1,
+                organ: "Labio",
+                objective: "x10",
+                staining: "Eoscina y hematoxilina",
+                location: "Cavidad oral",
+                characteristics: "Epitelio plano estratificado queratinizado, tejido conjuntivo laxo, vasos sanguíneos y células salivales",
+                function: "Comunicación, protección, sensación y expresión facial",
+                image: "https://upload.wikimedia.org/wikipedia/commons/f/fc/SkinTumors-P6160282.JPG",
+                imageCaption: "Epitelio plano estratificado queratinizado del labio humano"
+            },
+            {
+                id: 2,
+                organ: "Paladar Duro",
+                objective: "x40",
+                staining: "Hematoxilina y eoscina",
+                location: "Cavidad oral",
+                characteristics: "Mucosa, epitelio escamoso estratificado queratinizado que recubre la superficie ósea. Periostio debajo de la mucosa. Hueso formado por huesos maxilares y palatinos",
+                function: "Separación de cavidades, soporte y producción del habla",
+                image: "https://preview.redd.it/what-type-of-tissue-is-this-v0-md0o3nki77ld1.jpeg?auto=webp&s=02cc557e8a0fb569ab1f01c7b94448b37a096975",
+                imageCaption: "Sección histológica del paladar duro"
+            },
+            {
+                id: 3,
+                organ: "Pulmón",
+                objective: "x40",
+                staining: "Hematoxilina y eoscina",
+                location: "Cavidad torácica, uno cada lado del mediastino",
+                characteristics: "Epitelio respiratorio compuesto por células ciliadas y células caliciformes que producen moco, alveolos donde se produce el intercambio de gases. Células epiteliales alveolares tipo 1 y tipo 2",
+                function: "Intercambio de gases, respiración, regulación del pH",
+                image: "https://thumbs.dreamstime.com/b/tejido-pulmonar-humano-bajo-opini%C3%B3n-del-microscopio-para-la-histolog%C3%ADa-de-educaci%C3%B3n-114795933.jpg",
+                imageCaption: "Estructura alveolar del pulmón humano"
+            },
+            {
+                id: 4,
+                organ: "Glándula Tiroides",
+                objective: "x40",
+                staining: "Hematoxilina y eoscina",
+                location: "Región anterior del cuello por debajo de la tráquea",
+                characteristics: "Presenta folículos tiroideos con epitelio cúbico simple. Células foliculares secretan T3 y T4. Coloides almacenan tiroglobulina. Células parafoliculares o células C secretan calcitonina",
+                function: "Regula el metabolismo corporal a través de la T3 y T4. Células C producen calcitonina",
+                image: "https://i.pinimg.com/736x/65/32/03/65320356024e16649a139f412278af88.jpg",
+                imageCaption: "Folículos tiroficos con células foliculares y parafoliculares"
+            },
+            {
+                id: 5,
+                organ: "Trompas de Falopio",
+                objective: "x40",
+                staining: "Hematoxilina y eoscina",
+                location: "Cavidad pélvica, una en cada lado del útero",
+                characteristics: "Mucosa revestida por un epitelio ciliado y secretor. Músculo liso que ayuda a peristaltar. Serosa cubre la superficie externa",
+                function: "Captura del óvulo, transporte del óvulo y del espermatozoide, fecundación y transporte de embrión",
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Normal_Fallopian_Tube%2C_Human.jpg/1200px-Normal_Fallopian_Tube%2C_Human.jpg",
+                imageCaption: "Sección histológica de las trompas de Falopio"
+            },
+            {
+                id: 6,
+                organ: "Intestino Delgado",
+                objective: "x40",
+                staining: "Hematoxilina y eoscina",
+                location: "Cavidad abdominal, se divide en duodeno, yeyuno e íleon",
+                characteristics: "Epitelio cilíndrico simple con microvellosidades y células caliciformes. Lámina propia con tejido conectivo laxo y placas de Peyer. Muscular de la mucosa y submucosa con tejido conectivo denso",
+                function: "Absorción de nutrientes y vitamina B12, defensa inmunológica por placas de Peyer",
+                image: "https://mmegias.webs.uvigo.es/2-organos-a/imagenes-grandes/imagenes/digestivo-delgado-01.png",
+                imageCaption: "Vellosidades intestinales del intestino delgado"
+            },
+            {
+                id: 7,
+                organ: "Estómago",
+                objective: "x40",
+                staining: "Hematoxilina y eoscina",
+                location: "Entre el esófago y el duodeno",
+                characteristics: "Mucosa con epitelio cilíndrico simple y glándulas tubulares. Lámina propia con vasos sanguíneos y linfáticos. Muscular de la mucosa. Submucosa con tejido conectivo denso",
+                function: "Almacenamiento y mezcla de alimentos, secreción de jugos gástricos, inicio de la digestión química",
+                image: "https://actagastro.org/wp-content/uploads/2021/09/13_Suple_ACTA-4_Galich_Estomago_IMG01.png",
+                imageCaption: "Mucosa gástrica con glándulas tubulares"
+            },
+            {
+                id: 8,
+                organ: "Vejiga",
+                objective: "x40",
+                staining: "Hematoxilina y eoscina",
+                location: "Parte inferior del abdomen",
+                characteristics: "Urotelio (epitelio de transición), tejido conectivo laxo con vasos sanguíneos, doble capa de músculo liso",
+                function: "Almacenar orina y controlar la micción",
+                image: "https://i.ytimg.com/vi/POpHoN-SZuA/maxresdefault.jpg",
+                imageCaption: "Epitelio de transición (urotelio) de la vejiga"
+            },
+            {
+                id: 9,
+                organ: "Hígado",
+                objective: "x40",
+                staining: "Hematoxilina y eoscina",
+                location: "Parte superior derecha del abdomen, debajo del diafragma",
+                characteristics: "Hepatocitos organizados en cordones. Células de Kupffer (macrófagos), células de Ito (estrelladas), colangiocitos. Lobulillo hepático hexagonal con vena central",
+                function: "Metabolismo, detoxificación, síntesis de proteínas y producción de bilis",
+                image: "https://media.istockphoto.com/id/651352016/es/foto/c%C3%A9lula-del-h%C3%ADgado-humana-vista-de-microscopio.jpg?s=612x612&w=0&k=20&c=P7d9NSkwnpQFMRAC6mzQo5sHYYnCJNzuk3XNeiBTFNI=",
+                imageCaption: "Lobulillo hepático con hepatocitos y sinusoides"
+            },
+            {
+                id: 10,
+                organ: "Útero",
+                objective: "x40",
+                staining: "Hematoxilina y eoscina",
+                location: "En la pelvis femenina entre la vejiga urinaria y el recto",
+                characteristics: "Endometrio (capa mucosa), miometrio (capa muscular), perimetrio (capa serosa)",
+                function: "Implantación del embrión, desarrollo fetal, parto y menstruación",
+                image: "https://st2.depositphotos.com/5316818/44711/i/450/depositphotos_447118170-stock-photo-bladder-transitional-cell-carcinoma-light.jpg",
+                imageCaption: "Endometrio y miometrio del útero"
+            },
+            {
+                id: 11,
+                organ: "Lengua",
+                objective: "x4",
+                staining: "Eoscina y hematoxilina",
+                location: "Cavidad bucal",
+                characteristics: "Mucosa estratificada escamosa no queratinizada con presencia de papilas linguales",
+                function: "Determinación del gusto y receptores sensoriales que detectan textura, temperatura y presión",
+                image: "https://avinews.com/wp-content/uploads/2020/11/miopatia-carne-pollo.jpg",
+                imageCaption: "Papilas linguales en la superficie de la lengua"
+            },
+            {
+                id: 12,
+                organ: "Ovario",
+                objective: "x40",
+                staining: "Hematoxilina y eoscina",
+                location: "Cavidad pélvica, una en cada lado del útero",
+                characteristics: "Corteza ovárica con folículos ovarios en diferentes etapas. Células de la granulosa rodean el óvulo. Células de la teca producen andrógenos",
+                function: "Producción de óvulos, producción de hormonas sexuales, regulación del ciclo menstrual",
+                image: "https://i.pinimg.com/736x/4f/4d/90/4f4d902db90109a6f4c42a7038a19ad4.jpg",
+                imageCaption: "Folículos ováricos en diferentes etapas de desarrollo"
+            },
+            {
+                id: 13,
+                organ: "Riñón",
+                objective: "x40",
+                staining: "Hematoxilina y eoscina",
+                location: "Área retroperitoneal",
+                characteristics: "Corteza renal con corpúsculos renales. Túbulo contorneado proximal con epitelio cúbico simple y microvellosidades. Asa de Henle con segmento delgado y grueso",
+                function: "Filtra la sangre y elimina desechos por la orina. Equilibrio de líquidos y electrolitos",
+                image: "https://mmegias.webs.uvigo.es/2-organos-a/imagenes-grandes/imagenes/Excretor-rinon-01.png",
+                imageCaption: "Nefronas y túbulos renales"
+            },
+            {
+                id: 14,
+                organ: "Colon",
+                objective: "x40",
+                staining: "Hematoxilina y eoscina",
+                location: "Cavidad abdominal, se divide en ascendente, transverso, descendente y sigmoide",
+                characteristics: "Mucosa revestida por epitelio simple con células caliciformes. Criptas de Lieberkühn. Lámina propia con tejido conectivo",
+                function: "Absorción de agua y electrolitos, almacenamiento de heces y función inmunológica",
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRkLTPj3AXRrS2tRKN8ZNGaPjJoRXu5zX6EJmtINK4j2YgTH5Huv6VBhjwcXWo7m_uVj9w&usqp=CAU",
+                imageCaption: "Mucosa del colon con criptas de Lieberkühn"
+            },
+            {
+                id: 15,
+                organ: "Esófago",
+                objective: "x40",
+                staining: "Hematoxilina y eoscina",
+                location: "Detrás de la tráquea y delante de la columna vertebral en el tórax",
+                characteristics: "Mucosa con epitelio plano estratificado no queratinizado. Lámina propia con tejido conectivo laxo. Muscular de la mucosa. Submucosa con tejido conectivo denso",
+                function: "Barrera protectora ante el reflujo gastroesofágico, regula el paso del bolo alimenticio",
+                image: "https://media.istockphoto.com/id/666820226/es/foto/es%C3%B3fago-cruz-secci%C3%B3n-tejido-en-el-microscopio.jpg?s=1024x1024&w=is&k=20&c=dWrL14aDeHkpXCllY56Jqpv89l0MCEZ_OwR80DqH2ok=",
+                imageCaption: "Epitelio estratificado del esófago"
+            },
+            {
+                id: 16,
+                organ: "Intestino Grueso",
+                objective: "x40",
+                staining: "Hematoxilina y eoscina",
+                location: "Cavidad abdominal, se divide en ascendente, transverso, descendente y sigmoide",
+                characteristics: "Mucosa revestida por epitelio simple con células caliciformes. Criptas de Lieberkühn. Lámina propia con tejido conectivo y vasos sanguíneos",
+                function: "Absorción de agua y electrolitos, almacenamiento de heces y función inmunológica",
+                image: "https://www.researchgate.net/publication/382910347/figure/fig4/AS:11431281270140742@1722963623609/Histopathological-sections-of-specimen-within-HGM-polyps-A-Faveolar-epithelium-of_Q320.jpg",
+                imageCaption: "Estructura del intestino grueso"
+            },
+            {
+                id: 17,
+                organ: "Yeyuno",
+                objective: "x40",
+                staining: "Hematoxilina y eoscina",
+                location: "Entre el duodeno y el íleon",
+                characteristics: "Mucosa con epitelio simple cilíndrico con enterocitos y células caliciformes. Lámina propia con tejido conectivo laxo. Criptas de Lieberkühn",
+                function: "Absorción de nutrientes como carbohidratos, proteínas y lípidos",
+                image: "https://lh4.ggpht.com/tapeda/SGz4iI3b-hI/AAAAAAAAAEI/Cfz-ct9JZdY/PIC_0166_thumb[3].jpg?imgmax=800",
+                imageCaption: "Vellosidades del yeyuno"
+            },
+            {
+                id: 18,
+                organ: "Unión Gastro Esofágica",
+                objective: "x40",
+                staining: "Hematoxilina y eoscina",
+                location: "En el esófago y el estómago",
+                characteristics: "Epitelio escamoso estratificado no queratinizado, con células escamosas del esófago y glándulas cardiales que secretan moco y bicarbonato",
+                function: "Barrera antirreflujo, regulación del paso de alimentos, protección de la mucosa esofágica",
+                image: "https://i.redd.it/a-good-one-v0-glmsubru82yf1.jpg?width=3715&format=pjpg&auto=webp&s=7d699375135075c95cf914c6dc3c6a4b1fbfe565",
+                imageCaption: "Transición entre esófago y estómago"
+            },
+            {
+                id: 19,
+                organ: "Uretra",
+                objective: "x40",
+                staining: "Hematoxilina y eoscina",
+                location: "Desde la vejiga hasta el meato uretral",
+                characteristics: "Epitelio de transición en parte inicial, cambia a epitelio cilíndrico pseudoestratificado y luego a epitelio plano estratificado no queratinizado. Tejido conectivo laxo, glándulas uretrales y músculo liso",
+                function: "Transporta la orina desde la vejiga hasta el exterior del cuerpo",
+                image: "https://i0.wp.com/itshistology.com/wp-content/uploads/2022/07/5-1.png?ssl=1",
+                imageCaption: "Epitelio de la uretra"
+            },
+            {
+                id: 20,
+                organ: "Piel",
+                objective: "x40",
+                staining: "Hematoxilina y eoscina",
+                location: "Recubre toda la superficie del cuerpo",
+                characteristics: "Queratinización que produce queratina. Melanina protege de radiación UV. Glándulas sudoríparas y sebáceas",
+                function: "Protección, regulación de la temperatura, percepción sensorial, producción de vitamina D",
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Extramammary_Paget_disease_-_high_mag.jpg/330px-Extramammary_Paget_disease_-_high_mag.jpg",
+                imageCaption: "Estructura de la piel con epidermis, dermis e hipodermis"
+            },
+            {
+                id: 21,
+                organ: "Paladar Blando",
+                objective: "x40",
+                staining: "Hematoxilina y eoscina",
+                location: "Parte posterior del techo de la boca",
+                characteristics: "Mucosa con epitelio escamoso estratificado no queratinizado. Tejido conectivo proporciona soporte y estructura a la mucosa y los músculos",
+                function: "Deglución, habla y prevención de la regurgitación",
+                image: "https://isanidad.com/wp-content/uploads/2021/03/Anatomia-patologica.jpg",
+                imageCaption: "Paladar blando en la cavidad oral"
+            }
+        ];
+
+        // Tipos de preguntas
+        const questionTypes = [
+            {
+                type: "IDENTIFICACIÓN",
+                template: (organ) => `¿Qué órgano muestra esta preparación histológica?`,
+                getOptions: (correctOrgan) => {
+                    const organs = [...organsData].filter(o => o.organ !== correctOrgan.organ);
+                    const shuffled = organs.sort(() => 0.5 - Math.random()).slice(0, 3);
+                    const options = [correctOrgan, ...shuffled];
+                    return options.sort(() => 0.5 - Math.random());
+                }
+            },
+            {
+                type: "OBJETIVO",
+                template: (organ) => `¿Cuál es el objetivo de aumento utilizado para observar ${organ.organ}?`,
+                getOptions: (correctOrgan) => {
+                    const objectives = ["x4", "x10", "x20", "x40", "x100"];
+                    const correct = correctOrgan.objective;
+                    const wrongOptions = objectives.filter(o => o !== correct);
+                    const selectedWrong = wrongOptions.sort(() => 0.5 - Math.random()).slice(0, 3);
+                    const options = [correct, ...selectedWrong];
+                    return options.sort(() => 0.5 - Math.random()).map(o => ({organ: o, isObjective: true}));
+                }
+            },
+            {
+                type: "TINCIÓN",
+                template: (organ) => `¿Qué tinción se utiliza para la preparación histológica de ${organ.organ}?`,
+                getOptions: (correctOrgan) => {
+                    const stainings = ["Hematoxilina y eoscina", "Eoscina y hematoxilina", "Azul de metileno", "Tinción de Gram", "Tinción de Ziehl-Neelsen", "Tinción de Plata"];
+                    const correct = correctOrgan.staining;
+                    const wrongOptions = stainings.filter(s => s !== correct);
+                    const selectedWrong = wrongOptions.sort(() => 0.5 - Math.random()).slice(0, 3);
+                    const options = [correct, ...selectedWrong];
+                    return options.sort(() => 0.5 - Math.random()).map(s => ({organ: s, isStaining: true}));
+                }
+            },
+            {
+                type: "LOCALIZACIÓN",
+                template: (organ) => `¿Dónde se localiza anatómicamente ${organ.organ}?`,
+                getOptions: (correctOrgan) => {
+                    const locations = [
+                        "Cavidad oral",
+                        "Cavidad torácica",
+                        "Cavidad abdominal",
+                        "Cavidad pélvica",
+                        "Región anterior del cuello",
+                        "Área retroperitoneal",
+                        "Parte inferior del abdomen",
+                        "Parte superior derecha del abdomen"
+                    ];
+                    const correct = correctOrgan.location;
+                    const wrongOptions = locations.filter(l => l !== correct);
+                    const selectedWrong = wrongOptions.sort(() => 0.5 - Math.random()).slice(0, 3);
+                    const options = [correct, ...selectedWrong];
+                    return options.sort(() => 0.5 - Math.random()).map(l => ({organ: l, isLocation: true}));
+                }
+            },
+            {
+                type: "CARACTERÍSTICAS",
+                template: (organ) => `¿Cuál de estas características histológicas corresponde a ${organ.organ}?`,
+                getOptions: (correctOrgan) => {
+                    // Extraer características clave de cada órgano
+                    const allCharacteristics = organsData.map(o => {
+                        // Tomar solo la primera parte de las características (hasta el primer punto)
+                        const firstSentence = o.characteristics.split('.')[0];
+                        return firstSentence;
+                    }).filter(c => c && c.length > 10);
+                    
+                    const correct = correctOrgan.characteristics.split('.')[0];
+                    const wrongOptions = allCharacteristics.filter(c => c !== correct);
+                    const selectedWrong = wrongOptions.sort(() => 0.5 - Math.random()).slice(0, 3);
+                    const options = [correct, ...selectedWrong];
+                    return options.sort(() => 0.5 - Math.random()).map(c => ({organ: c, isCharacteristic: true}));
+                }
+            },
+            {
+                type: "FUNCIÓN",
+                template: (organ) => `¿Cuál es la función principal de ${organ.organ}?`,
+                getOptions: (correctOrgan) => {
+                    const functions = organsData.map(o => o.function.split(',')[0]);
+                    const correct = correctOrgan.function.split(',')[0];
+                    const wrongOptions = functions.filter(f => f !== correct);
+                    const selectedWrong = wrongOptions.sort(() => 0.5 - Math.random()).slice(0, 3);
+                    const options = [correct, ...selectedWrong];
+                    return options.sort(() => 0.5 - Math.random()).map(f => ({organ: f, isFunction: true}));
+                }
+            }
+        ];
+
+        // Variables del juego
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let correctAnswers = 0;
+        let gameActive = true;
+        let hintUsed = false;
+        let hintsUsedTotal = 0;
+        let currentOrgan = null;
+        let currentQuestionType = null;
+        let questions = [];
+        let timer;
+        let timeLeft = 30;
+        let timerActive = false;
+        
+        // Elementos del DOM
+        const startScreen = document.getElementById('start-screen');
+        const gameContainer = document.getElementById('game-container');
+        const startBtn = document.getElementById('start-btn');
+        const questionCounterEl = document.getElementById('question-counter');
+        const scoreEl = document.getElementById('score');
+        const accuracyEl = document.getElementById('accuracy');
+        const progressEl = document.getElementById('progress');
+        const questionTypeEl = document.getElementById('question-type');
+        const questionEl = document.getElementById('question');
+        const optionsContainerEl = document.getElementById('options-container');
+        const hintBtn = document.getElementById('hint-btn');
+        const hintBox = document.getElementById('hint-box');
+        const hintText = document.getElementById('hint-text');
+        const nextBtn = document.getElementById('next-btn');
+        const histoImage = document.getElementById('histo-image');
+        const imageCaption = document.getElementById('image-caption');
+        const organTagEl = document.getElementById('organ-tag');
+        const gameScreen = document.getElementById('game-screen');
+        const resultScreen = document.getElementById('result-screen');
+        const finalScoreEl = document.getElementById('final-score');
+        const correctAnswersEl = document.getElementById('correct-answers');
+        const totalQuestionsEl = document.getElementById('total-questions');
+        const finalAccuracyEl = document.getElementById('final-accuracy');
+        const hintsUsedEl = document.getElementById('hints-used');
+        const restartBtn = document.getElementById('restart-btn');
+        const timerValueEl = document.getElementById('timer-value');
+        const timerLabelEl = document.getElementById('timer-label');
+        const timeUpMessage = document.getElementById('time-up-message');
+        
+        // Iniciar el juego desde la pantalla de inicio
+        startBtn.addEventListener('click', function() {
+            startScreen.style.display = 'none';
+            gameContainer.style.display = 'block';
+            initGame();
+        });
+        
+        // Generar preguntas aleatorias
+        function generateQuestions() {
+            questions = [];
+            const selectedOrgans = [...organsData].sort(() => 0.5 - Math.random()).slice(0, 25);
+            
+            selectedOrgans.forEach((organ, index) => {
+                // Seleccionar un tipo de pregunta aleatorio para cada órgano
+                const questionType = questionTypes[Math.floor(Math.random() * questionTypes.length)];
+                
+                questions.push({
+                    organ: organ,
+                    type: questionType.type,
+                    question: questionType.template(organ),
+                    options: questionType.getOptions(organ),
+                    correctAnswer: 0, // El primer elemento en options es siempre el correcto (se baraja después)
+                    points: 10
+                });
+            });
+        }
+        
+        // Inicializar el juego
+        function initGame() {
+            generateQuestions();
+            currentQuestionIndex = 0;
+            score = 0;
+            correctAnswers = 0;
+            gameActive = true;
+            hintUsed = false;
+            hintsUsedTotal = 0;
+            timeLeft = 30;
+            
+            updateScore();
+            updateProgress();
+            showQuestion();
+            startTimer();
+            
+            // Mostrar pantalla de juego, ocultar resultados
+            gameScreen.style.display = 'block';
+            resultScreen.style.display = 'none';
+            
+            // Restablecer botón de pista
+            hintBtn.disabled = false;
+            hintBox.style.display = 'none';
+            timeUpMessage.style.display = 'none';
+            
+            // Actualizar temporizador
+            updateTimerDisplay();
+        }
+        
+        // Mostrar la pregunta actual
+        function showQuestion() {
+            const questionData = questions[currentQuestionIndex];
+            currentOrgan = questionData.organ;
+            currentQuestionType = questionData.type;
+            
+            // Reiniciar temporizador
+            resetTimer();
+            
+            // Actualizar contadores
+            questionCounterEl.textContent = `${currentQuestionIndex + 1}/${questions.length}`;
+            questionTypeEl.textContent = questionData.type;
+            questionEl.textContent = questionData.question;
+            
+            // Actualizar imagen (solo para preguntas de identificación)
+            if (questionData.type === "IDENTIFICACIÓN") {
+                organTagEl.textContent = "¿QUÉ ÓRGANO?";
+                histoImage.src = currentOrgan.image;
+                imageCaption.textContent = "Preparación histológica - Tinción H&E";
+            } else {
+                organTagEl.textContent = currentOrgan.organ.toUpperCase();
+                histoImage.src = currentOrgan.image;
+                imageCaption.textContent = currentOrgan.imageCaption;
+            }
+            
+            // Actualizar pista
+            let hintContent = "";
+            switch(questionData.type) {
+                case "IDENTIFICACIÓN":
+                    hintContent = `Este órgano se localiza en: ${currentOrgan.location}`;
+                    break;
+                case "OBJETIVO":
+                    hintContent = `Es un órgano del sistema ${getOrganSystem(currentOrgan.organ)}`;
+                    break;
+                case "TINCIÓN":
+                    hintContent = `Es la tinción más común en histología para este tipo de tejido`;
+                    break;
+                case "LOCALIZACIÓN":
+                    hintContent = `Su función principal es: ${currentOrgan.function.split(',')[0]}`;
+                    break;
+                case "CARACTERÍSTICAS":
+                    hintContent = `Este órgano se localiza en: ${currentOrgan.location}`;
+                    break;
+                case "FUNCIÓN":
+                    hintContent = `Una característica clave es: ${currentOrgan.characteristics.split('.')[0]}`;
+                    break;
+            }
+            hintText.textContent = hintContent;
+            hintBox.style.display = 'none';
+            hintBtn.disabled = false;
+            hintUsed = false;
+            
+            // Limpiar opciones anteriores
+            optionsContainerEl.innerHTML = '';
+            timeUpMessage.style.display = 'none';
+            
+            // Crear las opciones de respuesta
+            const letters = ['A', 'B', 'C', 'D'];
+            questionData.options.forEach((option, index) => {
+                const optionEl = document.createElement('div');
+                optionEl.className = 'option';
+                
+                let optionText = "";
+                if (typeof option === 'object') {
+                    if (option.isObjective) optionText = `Objetivo ${option.organ}`;
+                    else if (option.isStaining) optionText = option.organ;
+                    else if (option.isLocation) optionText = option.organ;
+                    else if (option.isCharacteristic) optionText = option.organ;
+                    else if (option.isFunction) optionText = option.organ;
+                    else optionText = option.organ;
+                } else {
+                    optionText = option.organ;
+                }
+                
+                optionEl.innerHTML = `
+                    <div class="option-letter">${letters[index]}</div>
+                    <div class="option-text">${optionText}</div>
+                `;
+                
+                // Asignar evento click a la opción
+                optionEl.addEventListener('click', () => selectAnswer(index));
+                
+                optionsContainerEl.appendChild(optionEl);
+            });
+            
+            // Ocultar botón "Siguiente"
+            nextBtn.classList.add('hidden');
+            
+            // Iniciar temporizador
+            startTimer();
+        }
+        
+        // Temporizador
+        function startTimer() {
+            clearInterval(timer);
+            timeLeft = 30;
+            timerActive = true;
+            updateTimerDisplay();
+            
+            timer = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+                
+                // Cambiar color cuando quedan 10 segundos
+                if (timeLeft <= 10) {
+                    timerLabelEl.classList.add('timer-warning');
+                }
+                
+                // Cambiar color cuando quedan 5 segundos
+                if (timeLeft <= 5) {
+                    timerLabelEl.classList.remove('timer-warning');
+                    timerLabelEl.classList.add('timer-danger');
+                }
+                
+                // Cuando se acaba el tiempo
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    timerActive = false;
+                    timeUp();
+                }
+            }, 1000);
+        }
+        
+        function resetTimer() {
+            clearInterval(timer);
+            timeLeft = 30;
+            timerActive = false;
+            timerLabelEl.classList.remove('timer-warning', 'timer-danger');
+            updateTimerDisplay();
+        }
+        
+        function updateTimerDisplay() {
+            timerValueEl.textContent = timeLeft;
+        }
+        
+        function timeUp() {
+            if (!gameActive) return;
+            
+            gameActive = false;
+            
+            // Mostrar mensaje de tiempo agotado
+            timeUpMessage.style.display = 'flex';
+            
+            // Deshabilitar todas las opciones
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.classList.add('disabled');
+                option.classList.add('time-up');
+            });
+            
+            // Deshabilitar botón de pista
+            hintBtn.disabled = true;
+            
+            // Mostrar la respuesta correcta
+            const questionData = questions[currentQuestionIndex];
+            let correctIndex = 0;
+            
+            if (currentQuestionType === "IDENTIFICACIÓN") {
+                correctIndex = questionData.options.findIndex(opt => opt.id === currentOrgan.id);
+            } else {
+                // Para otros tipos de preguntas
+                let correctText = "";
+                switch(currentQuestionType) {
+                    case "OBJETIVO":
+                        correctText = currentOrgan.objective;
+                        break;
+                    case "TINCIÓN":
+                        correctText = currentOrgan.staining;
+                        break;
+                    case "LOCALIZACIÓN":
+                        correctText = currentOrgan.location;
+                        break;
+                    case "CARACTERÍSTICAS":
+                        correctText = currentOrgan.characteristics.split('.')[0];
+                        break;
+                    case "FUNCIÓN":
+                        correctText = currentOrgan.function.split(',')[0];
+                        break;
+                }
+                
+                correctIndex = questionData.options.findIndex(opt => {
+                    const optText = typeof opt === 'object' ? opt.organ : opt;
+                    return optText === correctText;
+                });
+            }
+            
+            if (correctIndex >= 0) {
+                options[correctIndex].classList.add('correct');
+            }
+            
+            // Mostrar botón "Siguiente"
+            setTimeout(() => {
+                nextBtn.classList.remove('hidden');
+            }, 500);
+        }
+        
+        // Determinar sistema del órgano (para pistas)
+        function getOrganSystem(organName) {
+            const digestive = ['Labio', 'Paladar Duro', 'Paladar Blando', 'Lengua', 'Esófago', 'Estómago', 'Intestino Delgado', 'Intestino Grueso', 'Colon', 'Yeyuno', 'Unión Gastro Esofágica', 'Hígado'];
+            const respiratory = ['Pulmón'];
+            const endocrine = ['Glándula Tiroides'];
+            const reproductive = ['Trompas de Falopio', 'Útero', 'Ovario'];
+            const urinary = ['Riñón', 'Vejiga', 'Uretra'];
+            const integumentary = ['Piel'];
+            
+            if (digestive.includes(organName)) return "digestivo";
+            if (respiratory.includes(organName)) return "respiratorio";
+            if (endocrine.includes(organName)) return "endocrino";
+            if (reproductive.includes(organName)) return "reproductor";
+            if (urinary.includes(organName)) return "urinario";
+            if (integumentary.includes(organName)) return "tegumentario";
+            return "corporal";
+        }
+        
+        // Manejar selección de respuesta
+        function selectAnswer(selectedIndex) {
+            if (!gameActive || !timerActive) return;
+            
+            // Detener el temporizador
+            clearInterval(timer);
+            timerActive = false;
+            
+            const questionData = questions[currentQuestionIndex];
+            const options = document.querySelectorAll('.option');
+            
+            // Deshabilitar todas las opciones
+            options.forEach(option => option.classList.add('disabled'));
+            
+            // Deshabilitar botón de pista
+            hintBtn.disabled = true;
+            
+            // Determinar si la respuesta es correcta
+            let isCorrect = false;
+            if (currentQuestionType === "IDENTIFICACIÓN") {
+                isCorrect = questionData.options[selectedIndex].id === currentOrgan.id;
+            } else {
+                // Para otros tipos de preguntas, comparar texto
+                const selectedOption = questionData.options[selectedIndex];
+                const selectedText = typeof selectedOption === 'object' ? selectedOption.organ : selectedOption;
+                
+                let correctText = "";
+                switch(currentQuestionType) {
+                    case "OBJETIVO":
+                        correctText = currentOrgan.objective;
+                        break;
+                    case "TINCIÓN":
+                        correctText = currentOrgan.staining;
+                        break;
+                    case "LOCALIZACIÓN":
+                        correctText = currentOrgan.location;
+                        break;
+                    case "CARACTERÍSTICAS":
+                        correctText = currentOrgan.characteristics.split('.')[0];
+                        break;
+                    case "FUNCIÓN":
+                        correctText = currentOrgan.function.split(',')[0];
+                        break;
+                }
+                
+                isCorrect = selectedText === correctText;
+            }
+            
+            // Marcar respuesta correcta e incorrecta
+            if (isCorrect) {
+                options[selectedIndex].classList.add('correct');
+                score += questionData.points;
+                correctAnswers++;
+                updateScore();
+            } else {
+                options[selectedIndex].classList.add('incorrect');
+                // Encontrar y marcar la opción correcta
+                let correctIndex = 0;
+                if (currentQuestionType === "IDENTIFICACIÓN") {
+                    correctIndex = questionData.options.findIndex(opt => opt.id === currentOrgan.id);
+                } else {
+                    // Para otros tipos
+                    let correctText = "";
+                    switch(currentQuestionType) {
+                        case "OBJETIVO":
+                            correctText = currentOrgan.objective;
+                            break;
+                        case "TINCIÓN":
+                            correctText = currentOrgan.staining;
+                            break;
+                        case "LOCALIZACIÓN":
+                            correctText = currentOrgan.location;
+                            break;
+                        case "CARACTERÍSTICAS":
+                            correctText = currentOrgan.characteristics.split('.')[0];
+                            break;
+                        case "FUNCIÓN":
+                            correctText = currentOrgan.function.split(',')[0];
+                            break;
+                    }
+                    
+                    correctIndex = questionData.options.findIndex(opt => {
+                        const optText = typeof opt === 'object' ? opt.organ : opt;
+                        return optText === correctText;
+                    });
+                }
+                
+                if (correctIndex >= 0) {
+                    options[correctIndex].classList.add('correct');
+                }
+            }
+            
+            gameActive = false;
+            
+            // Mostrar botón "Siguiente" después de un breve retraso
+            setTimeout(() => {
+                nextBtn.classList.remove('hidden');
+            }, 500);
+        }
+        
+        // Mostrar pista
+        function showHint() {
+            if (hintUsed || !timerActive) return;
+            
+            hintBox.style.display = 'block';
+            hintUsed = true;
+            hintsUsedTotal++;
+            // Restar puntos por usar pista
+            score = Math.max(0, score - 5);
+            updateScore();
+            hintBtn.disabled = true;
+        }
+        
+        // Actualizar puntuación y precisión
+        function updateScore() {
+            scoreEl.textContent = score;
+            
+            const accuracy = currentQuestionIndex > 0 ? 
+                Math.round((correctAnswers / currentQuestionIndex) * 100) : 0;
+            accuracyEl.textContent = `${accuracy}%`;
+        }
+        
+        // Actualizar barra de progreso
+        function updateProgress() {
+            const progress = ((currentQuestionIndex) / questions.length) * 100;
+            progressEl.style.width = `${progress}%`;
+        }
+        
+        // Mostrar siguiente pregunta o resultados finales
+        function nextQuestion() {
+            currentQuestionIndex++;
+            
+            if (currentQuestionIndex < questions.length) {
+                gameActive = true;
+                updateProgress();
+                showQuestion();
+            } else {
+                showResults();
+            }
+        }
+        
+        // Mostrar pantalla de resultados
+        function showResults() {
+            // Ocultar pantalla de juego, mostrar resultados
+            gameScreen.style.display = 'none';
+            resultScreen.style.display = 'block';
+            
+            // Calcular precisión final
+            const accuracy = Math.round((correctAnswers / questions.length) * 100);
+            
+            // Actualizar resultados
+            finalScoreEl.textContent = score;
+            correctAnswersEl.textContent = correctAnswers;
+            totalQuestionsEl.textContent = questions.length;
+            finalAccuracyEl.textContent = `${accuracy}%`;
+            hintsUsedEl.textContent = hintsUsedTotal;
+            
+            // Actualizar círculo de puntuación con gradiente conic real
+            const scoreCircle = document.querySelector('.score-circle');
+            const percentage = (correctAnswers / questions.length) * 100;
+            scoreCircle.style.background = `conic-gradient(#78e08f 0% ${percentage}%, #e9ecef ${percentage}% 100%)`;
+            
+            // Determinar mensaje según puntuación
+            let message = "";
+            if (score >= 200) {
+                message = "¡Excelente! Dominas completamente la histología.";
+            } else if (score >= 150) {
+                message = "¡Muy bien! Tienes un conocimiento sólido de histología.";
+            } else if (score >= 100) {
+                message = "Buen trabajo. Sigue estudiando para mejorar.";
+            } else {
+                message = "Necesitas repasar más los conceptos de histología.";
+            }
+            
+            // Actualizar mensaje
+            document.querySelector('.result-screen p').innerHTML = 
+                `Has terminado el examen completo de histología. <strong>${message}</strong>`;
+        }
+        
+        // Event listeners
+        nextBtn.addEventListener('click', nextQuestion);
+        hintBtn.addEventListener('click', showHint);
+        restartBtn.addEventListener('click', initGame);
+        
+        // Inicializar precarga de imágenes
+        window.addEventListener('load', function() {
+            organsData.forEach(organ => {
+                const img = new Image();
+                img.src = organ.image;
+            });
+        });
+    </script>
+</body>
+</html>
